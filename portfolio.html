@@ -1,0 +1,911 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Arghanish Mukherjee | Site Reliability Engineer</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <style>
+        :root {
+            --bg-primary: #0a0d12;
+            --bg-secondary: #121824;
+            --bg-card: rgba(18, 24, 36, 0.7);
+            --border-color: rgba(255, 255, 255, 0.08);
+            --border-hover: rgba(16, 185, 129, 0.3);
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --accent-green: #10b981;
+            --accent-green-glow: rgba(16, 185, 129, 0.15);
+            --accent-blue: #3b82f6;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            --font-mono: 'Fira Code', monospace;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            line-height: 1.6;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Subtle Animated Grid Background */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            background-image: 
+                radial-gradient(circle at 50% 50%, rgba(16, 185, 129, 0.03) 0%, transparent 60%),
+                linear-gradient(rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+            background-size: 100% 100%, 40px 40px, 40px 40px;
+            z-index: -1;
+            pointer-events: none;
+        }
+
+        /* Layout Setup */
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        a {
+            color: inherit;
+            text-decoration: none;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(10, 13, 18, 0.85);
+            backdrop-filter: blur(12px);
+            border-bottom: 1px solid var(--border-color);
+            z-index: 1000;
+        }
+
+        .nav-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 70px;
+        }
+
+        .brand {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            font-size: 1.1rem;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .brand-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            box-shadow: 0 0 8px var(--accent-green);
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            list-style: none;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+        }
+
+        .nav-links a {
+            transition: color 0.2s ease;
+        }
+
+        .nav-links a:hover {
+            color: var(--accent-green);
+        }
+
+        /* Status Badge */
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 6px 14px;
+            background: rgba(16, 185, 129, 0.08);
+            border: 1px solid rgba(16, 185, 129, 0.2);
+            border-radius: 20px;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            margin-bottom: 24px;
+        }
+
+        .pulse-dot {
+            width: 8px;
+            height: 8px;
+            background-color: var(--accent-green);
+            border-radius: 50%;
+            position: relative;
+        }
+
+        .pulse-dot::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: var(--accent-green);
+            opacity: 0.7;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(0.8); opacity: 0.8; }
+            100% { transform: scale(2.4); opacity: 0; }
+        }
+
+        /* Hero Section with Avatar */
+        .hero {
+            padding: 150px 0 80px;
+            display: grid;
+            grid-template-columns: 1.2fr 0.8fr;
+            gap: 40px;
+            align-items: center;
+        }
+
+        .profile-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .profile-img-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            padding: 3px;
+            background: linear-gradient(135deg, var(--accent-green), var(--accent-blue));
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.2);
+            flex-shrink: 0;
+        }
+
+        .profile-img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+            background: var(--bg-secondary);
+        }
+
+        .hero-text h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            line-height: 1.15;
+            letter-spacing: -0.02em;
+        }
+
+        .hero-text h2 {
+            font-size: 1.15rem;
+            color: var(--accent-green);
+            font-weight: 500;
+            font-family: var(--font-mono);
+            margin-top: 4px;
+        }
+
+        .hero-text p {
+            color: var(--text-muted);
+            font-size: 1.05rem;
+            margin-bottom: 32px;
+            max-width: 540px;
+        }
+
+        .cta-group {
+            display: flex;
+            gap: 16px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .btn-primary {
+            background-color: var(--accent-green);
+            color: #000;
+            font-weight: 600;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+        }
+
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.08);
+            border-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        /* Interactive Terminal Mockup */
+        .terminal-card {
+            background: #0d1117;
+            border: 1px solid var(--border-color);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+        }
+
+        .terminal-header {
+            background: #161b22;
+            padding: 10px 16px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background-color: #ff5f56; }
+        .dot-yellow { background-color: #ffbd2e; }
+        .dot-green { background-color: #27c93f; }
+
+        .terminal-title {
+            color: var(--text-muted);
+            font-size: 0.75rem;
+        }
+
+        .terminal-body {
+            padding: 20px;
+            color: #c9d1d9;
+            min-height: 200px;
+        }
+
+        .command-line {
+            margin-bottom: 12px;
+            display: flex;
+            gap: 8px;
+        }
+
+        .prompt { color: var(--accent-green); }
+        .output { color: var(--text-muted); margin-bottom: 12px; padding-left: 12px;}
+        .highlight { color: var(--accent-blue); }
+
+        /* Section Layouts */
+        section {
+            padding: 80px 0;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .section-header {
+            margin-bottom: 48px;
+        }
+
+        .section-subtitle {
+            font-family: var(--font-mono);
+            color: var(--accent-green);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            margin-bottom: 8px;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 600;
+        }
+
+        /* Active Tasks Section */
+        .tasks-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+        }
+
+        .task-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .task-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-4px);
+            background: rgba(18, 24, 36, 0.9);
+        }
+
+        .task-icon {
+            color: var(--accent-green);
+            margin-bottom: 16px;
+        }
+
+        .task-card h3 {
+            font-size: 1.1rem;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+
+        .task-card p {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
+
+        .task-tag {
+            display: inline-block;
+            margin-top: 16px;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+        }
+
+        /* Experience Timeline */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 8px;
+            bottom: 0;
+            width: 2px;
+            background: var(--border-color);
+        }
+
+        .timeline-item {
+            position: relative;
+            padding-left: 28px;
+            margin-bottom: 40px;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -25px;
+            top: 6px;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--bg-primary);
+            border: 2px solid var(--accent-green);
+        }
+
+        .timeline-date {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            margin-bottom: 4px;
+        }
+
+        .timeline-role {
+            font-size: 1.2rem;
+            font-weight: 600;
+        }
+
+        .timeline-company {
+            color: var(--text-muted);
+            font-size: 0.95rem;
+            margin-bottom: 12px;
+        }
+
+        .timeline-bullets {
+            list-style: none;
+        }
+
+        .timeline-bullets li {
+            position: relative;
+            padding-left: 18px;
+            color: var(--text-muted);
+            font-size: 0.92rem;
+            margin-bottom: 8px;
+        }
+
+        .timeline-bullets li::before {
+            content: '›';
+            position: absolute;
+            left: 0;
+            color: var(--accent-green);
+            font-weight: bold;
+        }
+
+        /* Tech Stack Pills */
+        .skills-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+        }
+
+        .skill-category {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .skill-category h3 {
+            font-size: 0.95rem;
+            margin-bottom: 14px;
+            color: var(--text-main);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .pill-group {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pill {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-family: var(--font-mono);
+            font-size: 0.78rem;
+            color: var(--text-muted);
+            transition: all 0.2s ease;
+        }
+
+        .pill:hover {
+            color: var(--accent-green);
+            border-color: var(--border-hover);
+            background: var(--accent-green-glow);
+        }
+
+        /* Academics Section */
+        .academics-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .academic-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            padding: 24px;
+            border-radius: 8px;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .academic-card:hover {
+            border-color: var(--border-hover);
+            transform: translateY(-2px);
+        }
+
+        .academic-year {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--accent-green);
+            margin-bottom: 6px;
+        }
+
+        .academic-degree {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .academic-institution {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+            margin-bottom: 12px;
+        }
+
+        .academic-score {
+            display: inline-block;
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--accent-blue);
+            background: rgba(59, 130, 246, 0.1);
+            padding: 4px 10px;
+            border-radius: 4px;
+        }
+
+        /* Footer */
+        footer {
+            padding: 40px 0;
+            border-top: 1px solid var(--border-color);
+            text-align: center;
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            font-family: var(--font-mono);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .hero {
+                grid-template-columns: 1fr;
+                padding-top: 120px;
+            }
+
+            .profile-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
+            .hero-text h1 {
+                font-size: 2.2rem;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header / Navbar -->
+    <nav>
+        <div class="container nav-container">
+            <a href="#" class="brand">
+                <span class="brand-dot"></span> amukherjee.sre
+            </a>
+            <ul class="nav-links">
+                <li><a href="#about">About</a></li>
+                <li><a href="#active-work">Operations</a></li>
+                <li><a href="#experience">Experience</a></li>
+                <li><a href="#skills">Skills</a></li>
+                <li><a href="#academics">Academics</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <div class="container">
+        <section class="hero" id="about">
+            <div class="hero-text">
+                <div class="status-badge">
+                    <span class="pulse-dot"></span> System Operational | Open for Ops
+                </div>
+                <div class="profile-header">
+                    <!-- Embedded profile picture -->
+                    <div class="profile-img-wrapper">
+                        <img src="Cv_image.png" alt="Arghanish Mukherjee" class="profile-img">
+                    </div>
+                    <div>
+                        <h1>Arghanish Mukherjee</h1>
+                        <h2>Site Reliability Engineer</h2>
+                    </div>
+                </div>
+                <p>
+                    SRE with 4+ years of experience across production operations, cloud infrastructure automation, and real-time observability. Specialized in AWS, Terraform, GitHub Actions, Prometheus, and Python.
+                </p>
+                <div class="cta-group">
+                    <a href="mailto:arghanish@gmail.com" class="btn btn-primary">
+                        <i data-lucide="mail"></i> Get In Touch
+                    </a>
+                    <a href="https://www.linkedin.com/in/arghanish-mukherjee-51915b203/" target="_blank" class="btn btn-secondary">
+                        <i data-lucide="linkedin"></i> LinkedIn
+                    </a>
+                </div>
+            </div>
+
+            <!-- Terminal Visual Animation -->
+            <div class="terminal-card">
+                <div class="terminal-header">
+                    <div class="terminal-dots">
+                        <span class="dot dot-red"></span>
+                        <span class="dot dot-yellow"></span>
+                        <span class="dot dot-green"></span>
+                    </div>
+                    <div class="terminal-title">bash - sre-metrics</div>
+                </div>
+                <div class="terminal-body">
+                    <div class="command-line">
+                        <span class="prompt">$</span> <span>sre-tool status --current</span>
+                    </div>
+                    <div class="output">
+                        [<span style="color: var(--accent-green)">OK</span>] Infrastructure: <span class="highlight">AWS & Terraform</span><br>
+                        [<span style="color: var(--accent-green)">OK</span>] CI/CD: <span class="highlight">GitHub Actions</span><br>
+                        [<span style="color: var(--accent-green)">OK</span>] Observability: <span class="highlight">Grafana + Prometheus</span><br>
+                        [<span style="color: var(--accent-green)">OK</span>] OS / Support: <span class="highlight">Linux, macOS, Windows</span>
+                    </div>
+                    <div class="command-line">
+                        <span class="prompt">$</span> <span id="typing-text"></span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Active Operations / Current Work -->
+        <section id="active-work">
+            <div class="section-header">
+                <p class="section-subtitle">// Current Focus</p>
+                <h2 class="section-title">Active Engineering Tasks</h2>
+            </div>
+            <div class="tasks-grid">
+                <div class="task-card">
+                    <i data-lucide="activity" class="task-icon"></i>
+                    <h3>SRE Production Monitoring</h3>
+                    <p>Monitoring ticket queues across client products, executing root cause analysis, and upholding platform SLAs.</p>
+                    <span class="task-tag">Ops & Monitoring</span>
+                </div>
+                <div class="task-card">
+                    <i data-lucide="git-pull-request" class="task-icon"></i>
+                    <h3>Terraform to CI/CD Migration</h3>
+                    <p>Transitioning local deployments to automated GitHub Actions CI/CD pipelines with integrated security scanning.</p>
+                    <span class="task-tag">DevOps / IaC</span>
+                </div>
+                <div class="task-card">
+                    <i data-lucide="bar-chart-2" class="task-icon"></i>
+                    <h3>Observability Automation</h3>
+                    <p>Developing custom Python monitoring scripts deployed via Actions, surfacing platform health on Grafana dashboards.</p>
+                    <span class="task-tag">Python & Grafana</span>
+                </div>
+                <div class="task-card">
+                    <i data-lucide="cloud" class="task-icon"></i>
+                    <h3>AWS Cloud Management</h3>
+                    <p>Provisioning cloud infrastructure through Terraform while managing version-controlled infrastructure across Git repositories.</p>
+                    <span class="task-tag">AWS & IaC</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experience Timeline -->
+        <section id="experience">
+            <div class="section-header">
+                <p class="section-subtitle">// Career History</p>
+                <h2 class="section-title">Professional Experience</h2>
+            </div>
+            <div class="timeline">
+                
+                <div class="timeline-item">
+                    <div class="timeline-date">JULY 2025 - PRESENT</div>
+                    <div class="timeline-role">Site Reliability Engineer</div>
+                    <div class="timeline-company">Metrum Research Group (EOR - Justworks)</div>
+                    <ul class="timeline-bullets">
+                        <li>Monitor production infrastructure across networking, CPU, memory utilization, and service health.</li>
+                        <li>Designed custom Python monitoring scripts integrated with Prometheus & Grafana to cut incident response times.</li>
+                        <li>Automated GitHub Actions CI/CD pipelines using reusable YAML workflows to replace manual Terraform deployments.</li>
+                        <li>Provision and manage AWS cloud infrastructure through Terraform Infrastructure as Code (IaC).</li>
+                        <li>Maintain AI-assisted operational runbooks to enable faster automated troubleshooting.</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">AUG 2023 - JULY 2025</div>
+                    <div class="timeline-role">Senior IT Analyst</div>
+                    <div class="timeline-company">New Era Technology (Project: Cisco Application Support)</div>
+                    <ul class="timeline-bullets">
+                        <li>Delivered L2/L3 enterprise support for Cisco applications across Windows, macOS, Azure, Oracle, and Java environments.</li>
+                        <li>Automated operational workflows and reporting using custom REST APIs and Power Automate.</li>
+                        <li>Administered Jamf Pro, Duo Security, and SharePoint access and endpoint governance.</li>
+                        <li>Awarded Quality Champion Performer (2024) and Cisco Recognized Top Performer (Q1 2025).</li>
+                    </ul>
+                </div>
+
+                <div class="timeline-item">
+                    <div class="timeline-date">JUN 2022 - JUL 2023</div>
+                    <div class="timeline-role">IT Analyst</div>
+                    <div class="timeline-company">New Era Technology</div>
+                    <ul class="timeline-bullets">
+                        <li>Managed incident response and escalations via ServiceNow while maintaining strict SLA compliance.</li>
+                        <li>Served as Subject Matter Expert (SME) for SharePoint administration and technical resolution.</li>
+                    </ul>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- Expanded Technical Skills -->
+        <section id="skills">
+            <div class="section-header">
+                <p class="section-subtitle">// Full Tech Stack</p>
+                <h2 class="section-title">Technical Expertise</h2>
+            </div>
+            <div class="skills-container">
+                <div class="skill-category">
+                    <h3><i data-lucide="cloud" style="color:var(--accent-green)"></i> Cloud & IaC</h3>
+                    <div class="pill-group">
+                        <span class="pill">AWS</span>
+                        <span class="pill">Microsoft Azure</span>
+                        <span class="pill">Terraform</span>
+                        <span class="pill">Docker</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i data-lucide="cpu" style="color:var(--accent-green)"></i> CI/CD & Scripting</h3>
+                    <div class="pill-group">
+                        <span class="pill">GitHub Actions</span>
+                        <span class="pill">Git</span>
+                        <span class="pill">Python</span>
+                        <span class="pill">YAML</span>
+                        <span class="pill">Bash</span>
+                        <span class="pill">PowerShell</span>
+                        <span class="pill">Power Automate</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i data-lucide="activity" style="color:var(--accent-green)"></i> Observability & Ops</h3>
+                    <div class="pill-group">
+                        <span class="pill">Grafana</span>
+                        <span class="pill">Prometheus</span>
+                        <span class="pill">Jira</span>
+                        <span class="pill">ServiceNow</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i data-lucide="monitor" style="color:var(--accent-green)"></i> Operating Systems</h3>
+                    <div class="pill-group">
+                        <span class="pill">Linux</span>
+                        <span class="pill">Windows</span>
+                        <span class="pill">macOS</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i data-lucide="globe" style="color:var(--accent-green)"></i> Networking & Security</h3>
+                    <div class="pill-group">
+                        <span class="pill">TCP/IP</span>
+                        <span class="pill">DNS</span>
+                        <span class="pill">DHCP</span>
+                        <span class="pill">VPN</span>
+                        <span class="pill">HTTP/HTTPS</span>
+                        <span class="pill">SSL/TLS</span>
+                        <span class="pill">Duo Security</span>
+                        <span class="pill">Jamf Pro</span>
+                    </div>
+                </div>
+
+                <div class="skill-category">
+                    <h3><i data-lucide="database" style="color:var(--accent-green)"></i> Databases & Platforms</h3>
+                    <div class="pill-group">
+                        <span class="pill">SQL</span>
+                        <span class="pill">Oracle</span>
+                        <span class="pill">Java</span>
+                        <span class="pill">SharePoint</span>
+                        <span class="pill">Microsoft 365</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Academics Section -->
+        <section id="academics">
+            <div class="section-header">
+                <p class="section-subtitle">// Education</p>
+                <h2 class="section-title">Academics</h2>
+            </div>
+            <div class="academics-grid">
+                
+                <div class="academic-card">
+                    <div class="academic-year">2019 - 2022</div>
+                    <div class="academic-degree">Master of Computer Applications (MCA)</div>
+                    <div class="academic-institution">Acharya Institute of Management and Science, Bangalore</div>
+                    <div class="academic-score">CGPA: 8.4</div>
+                </div>
+
+                <div class="academic-card">
+                    <div class="academic-year">2016 - 2019</div>
+                    <div class="academic-degree">Bachelor of Computer Applications (BCA)</div>
+                    <div class="academic-institution">Administrative Management College (AMC), Bangalore</div>
+                    <div class="academic-score">CGPA: 6.66</div>
+                </div>
+
+                <div class="academic-card">
+                    <div class="academic-year">2015</div>
+                    <div class="academic-degree">Senior Secondary School (XII)</div>
+                    <div class="academic-institution">Kalyani Public School, Barasat (CBSE)</div>
+                    <div class="academic-score">Score: 59%</div>
+                </div>
+
+                <div class="academic-card">
+                    <div class="academic-year">2013</div>
+                    <div class="academic-degree">Secondary School (X)</div>
+                    <div class="academic-institution">Kalyani Public School, Barasat (CBSE)</div>
+                    <div class="academic-score">CGPA: 8.4</div>
+                </div>
+
+            </div>
+        </section>
+
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <p>Designed & Engineered by Arghanish Mukherjee &copy; 2026</p>
+        </div>
+    </footer>
+
+    <!-- Terminal Animation Script -->
+    <script>
+        lucide.createIcons();
+
+        const phrases = ["python3 health_check.py", "terraform plan -out=tfplan", "git push origin main"];
+        let i = 0, j = 0, isDeleting = false;
+        const target = document.getElementById('typing-text');
+
+        function loopTyping() {
+            const currentPhrase = phrases[i];
+            
+            if (isDeleting) {
+                target.textContent = currentPhrase.substring(0, j - 1);
+                j--;
+            } else {
+                target.textContent = currentPhrase.substring(0, j + 1);
+                j++;
+            }
+
+            if (!isDeleting && j === currentPhrase.length) {
+                isDeleting = true;
+                setTimeout(loopTyping, 2000);
+                return;
+            }
+
+            if (isDeleting && j === 0) {
+                isDeleting = false;
+                i = (i + 1) % phrases.length;
+            }
+
+            const speed = isDeleting ? 40 : 80;
+            setTimeout(loopTyping, speed);
+        }
+
+        document.addEventListener('DOMContentLoaded', loopTyping);
+    </script>
+</body>
+</html>
